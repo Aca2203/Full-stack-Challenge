@@ -35,6 +35,8 @@ public class Game extends Frame {
 			}
 			
 			in.close();
+			
+			findIslands();
 						
 		} catch (Exception e) { System.out.println(e.getMessage()); }		
 		
@@ -55,6 +57,19 @@ public class Game extends Frame {
 		});
 	}
 	
+	private void findIslands() {
+		for(int i = 0; i < numberOfCells; i++)
+			for(int j = 0; j < numberOfCells; j++) {
+				if(map.cells[i][j] instanceof Land && ((Land) map.cells[i][j]).getIslandID() == -1) {
+					Island island = new Island(map);
+					map.addIsland(island);
+					Land land = (Land) map.cells[i][j];
+					island.addLand(i, j);
+					island.calculateAverageHeight();
+				}
+			}		
+	}
+
 	private void fillWindow() {
 		Cell[][] cells = map.cells;		
 		for(int i = 0; i < cells.length; i++)

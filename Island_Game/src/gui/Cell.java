@@ -16,10 +16,13 @@ public abstract class Cell extends Canvas {
 			if(height <= 400) {
 				int number = (int) (height / 400.0 * 255);
 				this.color = new Color(0, (int)(number / 255.0 * 180), 255 - number);
+			} else if (height <= 500) {
+				int number = (int) ((height - 400) / 100.0 * 255);
+				this.color = new Color(number, 180 + (int)(number / 255.0 * 75), (int)((height - 400) / 100.0 * 150));
 			}
 			else if (height <= 800) {
-				double number = (height - 400) / 400.0;
-				this.color = new Color((int)(number * 100), 180 - (int) (number * 130), 0);
+				int number = (int) ((height - 500) / 300.0 * 255);
+				this.color = new Color(255 - (int)(number / 255.0 * 155), 255 - (int)(number / 255.0 * 205), 150 - (int)(number / 255.0 * 150));
 			} else {
 				int number = (int) ((height - 800) / 200.0 * 255);
 				this.color = new Color(100 + (int)(number / 255.0 * 155), 50 + (int)(number / 255.0 * 205), number);
