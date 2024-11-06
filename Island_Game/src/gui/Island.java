@@ -1,9 +1,7 @@
 package gui;
 
-import java.util.ArrayList;
-
 public class Island {
-	private static int nextID = 0;
+	static int nextID = 0;
 	private int id = nextID++;
 	private double averageHeight = 0;
 	private Map map;

@@ -10,9 +10,25 @@ public class Game extends Frame {
 		
 	private static int numberOfCells = 30;
 	private Panel mapPanel = new Panel(new GridLayout(30, 30));
-	private Map map = new Map(numberOfCells, numberOfCells);
+	private Map map = new Map(numberOfCells, numberOfCells);	
+	private Button restartButton = new Button("Restart game");
 	
 	public Game() {
+		generateMap();
+		
+		setLocation(500, 50);
+		setResizable(false);
+		setTitle("Game");
+		
+		fillWindow();
+		pack();
+		
+		addListeners();
+		
+		setVisible(true);
+	}
+	
+	private void generateMap() {
 		URL url;
 		HttpURLConnection con;
 		try {
@@ -36,47 +52,75 @@ public class Game extends Frame {
 			
 			in.close();
 			
-			findIslands();
+			findIslands();					
 						
-		} catch (Exception e) { System.out.println(e.getMessage()); }		
+		} catch (Exception e) { System.out.println(e.getMessage()); }	
+	}
+	
+	private void addListeners() {		
+		restartButton.addActionListener((ae) -> {
+			Cell[][] oldCells = new Cell[numberOfCells][numberOfCells];
+			for(int i = 0; i < numberOfCells; i++)
+				for(int j = 0; j < numberOfCells; j++) {
+					oldCells[i][j] = map.cells[i][j];
+					mapPanel.remove(map.cells[i][j]);					
+				}			
+			generateMap();
+			addCellListeners();
+			for(int i = 0; i < numberOfCells; i++)
+				for(int j = 0; j < numberOfCells; j++) {
+					map.cells[i][j].setBounds(oldCells[i][j].getBounds());
+					mapPanel.add(map.cells[i][j]);
+				}
+		});
 		
-		setLocation(500, 50);
-		setResizable(false);
-		setTitle("Game");
+		addCellListeners();
 		
-		fillWindow();
-		pack();
-		
-		setVisible(true);
-		
-		addWindowListener(new WindowAdapter() {
+		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				dispose();
 			}
 		});
 	}
-	
+
+	private void addCellListeners() {
+		for(int i = 0; i < numberOfCells; i++)
+			for(int j = 0; j < numberOfCells; j++) {
+				final int ii = i;
+				final int jj = j;
+				map.cells[i][j].addMouseListener(new MouseAdapter() {
+					public void mousePressed(MouseEvent e) {
+						if(map.cells[ii][jj] instanceof Water) System.out.println("Water!");
+						else System.out.println(((Land) map.cells[ii][jj]).getIslandID());
+					}
+				});
+			}
+	}
+
 	private void findIslands() {
 		for(int i = 0; i < numberOfCells; i++)
 			for(int j = 0; j < numberOfCells; j++) {
 				if(map.cells[i][j] instanceof Land && ((Land) map.cells[i][j]).getIslandID() == -1) {
 					Island island = new Island(map);
 					map.addIsland(island);
-					Land land = (Land) map.cells[i][j];
 					island.addLand(i, j);
 					island.calculateAverageHeight();
 				}
-			}		
+			}
 	}
 
 	private void fillWindow() {
-		Cell[][] cells = map.cells;		
+		Cell[][] cells = map.cells;
 		for(int i = 0; i < cells.length; i++)
 			for(int j = 0; j < cells[i].length; j++){
 				mapPanel.add(cells[i][j]);
 			}
-		this.add(mapPanel);
+		this.add(mapPanel, BorderLayout.CENTER);
+		Panel controlPanel = new Panel();
+		//restartButton.setEnabled(false);
+		controlPanel.add(restartButton);
+		this.add(controlPanel, BorderLayout.EAST);
 	}
 
 	public static void main(String[] args) {

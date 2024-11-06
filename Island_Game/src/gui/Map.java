@@ -19,4 +19,8 @@ public class Map {
 	public void addIsland(Island island) {
 		if(!islands.contains(island)) islands.add(island);
 	}
+	
+	public void deleteMap() {				
+		islands.clear();
+	}
 }
