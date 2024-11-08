@@ -15,9 +15,12 @@ public class Game extends Frame {
 	private Label numberOfAttemptsLabel = new Label("Number of attempts: 3");
 	private Label message = new Label();
 	
+	private Menu menu;
+	
 	private int numberOfAttempts;
 	
-	public Game() {
+	public Game(Menu menu) {
+		this.menu = menu;
 		generateMap();
 		
 		setLocation(500, 50);
@@ -34,6 +37,7 @@ public class Game extends Frame {
 	
 	@SuppressWarnings("deprecation")
 	private void generateMap() {
+		Island.resetNextID();
 		this.numberOfAttempts = 3;
 		numberOfAttemptsLabel.setText("Number of attempts: " + numberOfAttempts);
 		message.setText("");
@@ -88,8 +92,9 @@ public class Game extends Frame {
 		
 		this.addWindowListener(new WindowAdapter() {
 			@Override
-			public void windowClosing(WindowEvent e) {
+			public void windowClosing(WindowEvent e) {				
 				dispose();
+				menu.setVisible(true);
 			}
 		});
 	}
@@ -101,14 +106,14 @@ public class Game extends Frame {
 				final int jj = j;
 				map.cells[i][j].addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent e) {						
-						if(map.cells[ii][jj] instanceof Water) message.setText("Water!");
+						if(map.cells[ii][jj] instanceof Water) message.setText("Click on an island!");
 						else {
 							numberOfAttempts--;							
 							if(((Land) map.cells[ii][jj]).getIslandID() == Map.getHighestIslandID()) {
 								message.setText("You won!");
 								deactivateMap();
-								restartButton.setEnabled(true);									
-							} else {									 
+								restartButton.setEnabled(true);
+							} else {
 								 if(numberOfAttempts == 0) {
 									 message.setText("Game over!");
 									 numberOfAttemptsLabel.setText("Number of attempts: 0");
@@ -158,10 +163,6 @@ public class Game extends Frame {
 		controlPanel.add(message);
 		controlPanel.add(restartButton);
 		this.add(controlPanel, BorderLayout.EAST);
-	}
-
-	public static void main(String[] args) {
-		new Game();
-	}
+	}	
 
 }

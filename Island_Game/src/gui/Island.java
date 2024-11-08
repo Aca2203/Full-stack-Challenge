@@ -1,7 +1,7 @@
 package gui;
 
 public class Island {
-	static int nextID = 0;
+	private static int nextID = 0;
 	private int id = nextID++;
 	private double averageHeight = 0;
 	private Map map;
@@ -10,6 +10,10 @@ public class Island {
 	
 	public int getID() {
 		return id;
+	}
+	
+	public static void resetNextID() {
+		nextID = 0;
 	}
 	
 	public void addLand(int i, int j) {
