@@ -12,6 +12,10 @@ public class Game extends Frame {
 	private Panel mapPanel = new Panel(new GridLayout(30, 30));
 	private Map map = new Map(numberOfCells, numberOfCells);	
 	private Button restartButton = new Button("Restart game");
+	private Label numberOfAttemptsLabel = new Label("Number of attempts: 3");
+	private Label message = new Label();
+	
+	private int numberOfAttempts;
 	
 	public Game() {
 		generateMap();
@@ -28,10 +32,14 @@ public class Game extends Frame {
 		setVisible(true);
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void generateMap() {
+		this.numberOfAttempts = 3;
+		numberOfAttemptsLabel.setText("Number of attempts: " + numberOfAttempts);
+		message.setText("");
 		URL url;
 		HttpURLConnection con;
-		try {
+		try {			
 			url = new URL("https://jobfair.nordeus.com/jf24-fullstack-challenge/test");
 			con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("GET");
@@ -52,19 +60,21 @@ public class Game extends Frame {
 			
 			in.close();
 			
-			findIslands();					
+			findIslands();
 						
 		} catch (Exception e) { System.out.println(e.getMessage()); }	
 	}
 	
 	private void addListeners() {		
 		restartButton.addActionListener((ae) -> {
+			restartButton.setEnabled(false);
 			Cell[][] oldCells = new Cell[numberOfCells][numberOfCells];
 			for(int i = 0; i < numberOfCells; i++)
 				for(int j = 0; j < numberOfCells; j++) {
 					oldCells[i][j] = map.cells[i][j];
 					mapPanel.remove(map.cells[i][j]);					
-				}			
+				}
+			map.deleteMap();
 			generateMap();
 			addCellListeners();
 			for(int i = 0; i < numberOfCells; i++)
@@ -90,12 +100,36 @@ public class Game extends Frame {
 				final int ii = i;
 				final int jj = j;
 				map.cells[i][j].addMouseListener(new MouseAdapter() {
-					public void mousePressed(MouseEvent e) {
-						if(map.cells[ii][jj] instanceof Water) System.out.println("Water!");
-						else System.out.println(((Land) map.cells[ii][jj]).getIslandID());
+					public void mousePressed(MouseEvent e) {						
+						if(map.cells[ii][jj] instanceof Water) message.setText("Water!");
+						else {
+							numberOfAttempts--;							
+							if(((Land) map.cells[ii][jj]).getIslandID() == Map.getHighestIslandID()) {
+								message.setText("You won!");
+								deactivateMap();
+								restartButton.setEnabled(true);									
+							} else {									 
+								 if(numberOfAttempts == 0) {
+									 message.setText("Game over!");
+									 numberOfAttemptsLabel.setText("Number of attempts: 0");
+									 deactivateMap();
+									 restartButton.setEnabled(true);
+								 }
+								 else {
+									 message.setText("You are wrong, try again!");
+									 numberOfAttemptsLabel.setText("Number of attempts: " + numberOfAttempts);
+								 }
+							}
+						}
 					}
 				});
 			}
+	}
+
+	protected void deactivateMap() {
+		for(int i = 0; i < numberOfCells; i++)
+			for(int j = 0; j < numberOfCells; j++)
+				map.cells[i][j].setEnabled(false);
 	}
 
 	private void findIslands() {
@@ -106,8 +140,9 @@ public class Game extends Frame {
 					map.addIsland(island);
 					island.addLand(i, j);
 					island.calculateAverageHeight();
+					Map.setMaximumAverageHeight(island);
 				}
-			}
+			}		
 	}
 
 	private void fillWindow() {
@@ -117,8 +152,10 @@ public class Game extends Frame {
 				mapPanel.add(cells[i][j]);
 			}
 		this.add(mapPanel, BorderLayout.CENTER);
-		Panel controlPanel = new Panel();
-		//restartButton.setEnabled(false);
+		Panel controlPanel = new Panel(new GridLayout(0, 1));
+		restartButton.setEnabled(false);
+		controlPanel.add(numberOfAttemptsLabel);
+		controlPanel.add(message);
 		controlPanel.add(restartButton);
 		this.add(controlPanel, BorderLayout.EAST);
 	}

@@ -5,7 +5,24 @@ import java.util.ArrayList;
 public class Map {
 	protected Cell[][] cells;
 	protected ArrayList<Island> islands = new ArrayList<>();
+	private static double maximumAverageHeight = 0;
+	private static int highestIslandID = -1;
 	
+	public static double getMaximumAverageHeight() {
+		return maximumAverageHeight;
+	}
+
+	public static int getHighestIslandID() {
+		return highestIslandID;
+	}
+
+	public static void setMaximumAverageHeight(Island island) {
+		if(maximumAverageHeight < island.getAverageHeight()) {
+			maximumAverageHeight = island.getAverageHeight();
+			highestIslandID = island.getID();
+		}
+	}
+
 	public Map(int numOfRows, int numOfColumns) {
 		cells = new Cell[numOfRows][numOfColumns];
 	}
@@ -22,5 +39,7 @@ public class Map {
 	
 	public void deleteMap() {				
 		islands.clear();
+		maximumAverageHeight = 0;
+		highestIslandID = -1;
 	}
 }

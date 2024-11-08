@@ -8,6 +8,10 @@ public class Island {
 	
 	public Island(Map map) { this.map = map; }
 	
+	public int getID() {
+		return id;
+	}
+	
 	public void addLand(int i, int j) {
 		Land land = (Land) map.cells[i][j];
 		land.setIslandID(id);
