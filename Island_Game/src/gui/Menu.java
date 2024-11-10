@@ -10,9 +10,10 @@ public class Menu extends Frame {
 
 	private Panel centerPanel = new Panel(new GridLayout(0, 1));
 	private Button playButton = new Button("Play!");
+	private Button helpButton = new Button("Help");
 	
 	public Menu() {
-		setBounds(500, 50, 500, 500);
+		setBounds(500, 50, 300, 200);
 		setResizable(false);
 		setTitle("Main menu");
 		
@@ -23,8 +24,9 @@ public class Menu extends Frame {
 	}
 	
 	private void fillWindow() {
-		centerPanel.add(new Label("Island game"));
+		centerPanel.add(new Label("Welcome to The Island Game!"));
 		centerPanel.add(playButton);
+		centerPanel.add(helpButton);
 		this.add(centerPanel, BorderLayout.CENTER);
 	}
 
@@ -39,6 +41,11 @@ public class Menu extends Frame {
 		playButton.addActionListener((ae) -> {
 			this.setVisible(false);
 			new Game(this);
+		});
+		
+		helpButton.addActionListener((ae) -> {
+			this.setVisible(false);
+			new Help(this);
 		});
 	}
 

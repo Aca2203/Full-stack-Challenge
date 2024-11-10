@@ -10,7 +10,7 @@ public class Game extends Frame {
 		
 	private static int numberOfCells = 30;
 	private Panel mapPanel = new Panel(new GridLayout(30, 30));
-	private Map map = new Map(numberOfCells, numberOfCells);	
+	private Map map = new Map(numberOfCells, numberOfCells);
 	private Button restartButton = new Button("Restart game");
 	private Label numberOfAttemptsLabel = new Label("Number of attempts: 3");
 	private Label message = new Label();
