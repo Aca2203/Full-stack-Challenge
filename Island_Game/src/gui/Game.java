@@ -108,24 +108,35 @@ public class Game extends Frame {
 					public void mousePressed(MouseEvent e) {						
 						if(map.cells[ii][jj] instanceof Water) message.setText("Click on an island!");
 						else {
-							numberOfAttempts--;							
-							if(((Land) map.cells[ii][jj]).getIslandID() == Map.getHighestIslandID()) {
+							numberOfAttempts--;
+							int id = ((Land) map.cells[ii][jj]).getIslandID();
+							if(((Land) map.cells[ii][jj]).getIslandID() == Map.getHighestIslandID()) {								
+								mark(id, Color.GREEN);
 								message.setText("You won!");
 								deactivateMap();
 								restartButton.setEnabled(true);
 							} else {
 								 if(numberOfAttempts == 0) {
-									 message.setText("Game over!");
+									 mark(id, Color.RED);
+									 message.setText("Game over!");									 
 									 numberOfAttemptsLabel.setText("Number of attempts: 0");
 									 deactivateMap();
 									 restartButton.setEnabled(true);
 								 }
 								 else {
+									 mark(id, Color.RED);
 									 message.setText("You are wrong, try again!");
 									 numberOfAttemptsLabel.setText("Number of attempts: " + numberOfAttempts);
 								 }
 							}
 						}
+						map.refresh();
+					}
+
+					private void mark(int id, Color color) {
+						for(int a = 0; a < numberOfCells; a++)
+							for(int b = 0; b < numberOfCells; b++)
+								if(map.cells[a][b] instanceof Land && ((Land) map.cells[a][b]).getIslandID() == id) map.cells[a][b].mark(color);
 					}
 				});
 			}
@@ -147,7 +158,7 @@ public class Game extends Frame {
 					island.calculateAverageHeight();
 					Map.setMaximumAverageHeight(island);
 				}
-			}		
+			}
 	}
 
 	private void fillWindow() {

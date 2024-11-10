@@ -8,6 +8,8 @@ public abstract class Cell extends Canvas {
 	private Color color;
 	private static int width = 30;
 	
+	private Color colorAfterClick;
+	
 	protected Cell(int height) throws HeightException {
 		if(height < 0 || height > 1000) throw new HeightException();
 		this.height = height;
@@ -34,9 +36,14 @@ public abstract class Cell extends Canvas {
 	public void paint(Graphics g) {
 		Color oldColor = g.getColor();
 		
-		g.setColor(color);
+		if(colorAfterClick != null) g.setColor(colorAfterClick);
+		else g.setColor(color);
 		g.fillRect(0, 0, width, width);
 		
 		g.setColor(oldColor);
+	}
+	
+	public void mark(Color colorAfterClick) {
+		this.colorAfterClick = colorAfterClick;
 	}
 }
