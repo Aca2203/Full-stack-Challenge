@@ -14,6 +14,9 @@ public class Game extends Frame {
 	private Button restartButton = new Button("Restart game");
 	private Label numberOfAttemptsLabel = new Label("Number of attempts: 3");
 	private Label message = new Label();
+	private Label timeLabel = new Label();
+	
+	private Timer timer = new Timer(timeLabel);
 	
 	private Menu menu;
 	
@@ -30,9 +33,12 @@ public class Game extends Frame {
 		fillWindow();
 		pack();
 		
-		addListeners();
+		addListeners();		
 		
 		setVisible(true);
+		
+		timer.start();
+		timer.activate();
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -69,7 +75,7 @@ public class Game extends Frame {
 		} catch (Exception e) { System.out.println(e.getMessage()); }	
 	}
 	
-	private void addListeners() {		
+	private void addListeners() {
 		restartButton.addActionListener((ae) -> {
 			restartButton.setEnabled(false);
 			Cell[][] oldCells = new Cell[numberOfCells][numberOfCells];
@@ -80,6 +86,8 @@ public class Game extends Frame {
 				}
 			map.deleteMap();
 			generateMap();
+			timer.reset();
+			timer.activate();
 			addCellListeners();
 			for(int i = 0; i < numberOfCells; i++)
 				for(int j = 0; j < numberOfCells; j++) {
@@ -93,6 +101,7 @@ public class Game extends Frame {
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
+				if(timer != null) timer.interrupt();
 				map.deleteMap();
 				dispose();
 				menu.setVisible(true);
@@ -113,14 +122,14 @@ public class Game extends Frame {
 							int id = ((Land) map.cells[ii][jj]).getIslandID();
 							if(((Land) map.cells[ii][jj]).getIslandID() == Map.getHighestIslandID()) {								
 								mark(id, Color.GREEN);
-								message.setText("You won!");
+								message.setText("You won!");								
 								deactivateMap();
 								restartButton.setEnabled(true);
 							} else {
 								 if(numberOfAttempts == 0) {
 									 mark(id, Color.RED);
 									 message.setText("Game over!");									 
-									 numberOfAttemptsLabel.setText("Number of attempts: 0");
+									 numberOfAttemptsLabel.setText("Number of attempts: 0");									 
 									 deactivateMap();
 									 restartButton.setEnabled(true);
 								 }
@@ -130,8 +139,8 @@ public class Game extends Frame {
 									 numberOfAttemptsLabel.setText("Number of attempts: " + numberOfAttempts);
 								 }
 							}
-						}
-						map.refresh();
+							map.refresh();
+						}						
 					}
 
 					private void mark(int id, Color color) {
@@ -144,6 +153,7 @@ public class Game extends Frame {
 	}
 
 	protected void deactivateMap() {
+		timer.pause();
 		for(int i = 0; i < numberOfCells; i++)
 			for(int j = 0; j < numberOfCells; j++)
 				map.cells[i][j].setEnabled(false);
@@ -173,6 +183,7 @@ public class Game extends Frame {
 		restartButton.setEnabled(false);
 		controlPanel.add(numberOfAttemptsLabel);
 		controlPanel.add(message);
+		controlPanel.add(timeLabel);
 		controlPanel.add(restartButton);
 		this.add(controlPanel, BorderLayout.EAST);
 	}	
