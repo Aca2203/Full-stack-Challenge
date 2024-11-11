@@ -92,7 +92,8 @@ public class Game extends Frame {
 		
 		this.addWindowListener(new WindowAdapter() {
 			@Override
-			public void windowClosing(WindowEvent e) {				
+			public void windowClosing(WindowEvent e) {
+				map.deleteMap();
 				dispose();
 				menu.setVisible(true);
 			}
