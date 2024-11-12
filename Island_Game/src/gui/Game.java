@@ -16,6 +16,9 @@ public class Game extends Frame {
 	private Label message = new Label();
 	private Label timeLabel = new Label();
 	
+	private int numberOfWins = 0;
+	private int numberOfLosses = 0;
+	
 	private Timer timer = new Timer(timeLabel);
 	
 	private Menu menu;
@@ -24,6 +27,8 @@ public class Game extends Frame {
 	
 	public Game(Menu menu) {
 		this.menu = menu;
+		loadStatistics();
+		
 		generateMap();
 		
 		setLocation(500, 50);
@@ -41,6 +46,35 @@ public class Game extends Frame {
 		timer.activate();
 	}
 	
+	private void loadStatistics() {
+		File file = new File("PlayerStatistics.txt");
+		if(!file.exists()) {
+			try {
+				file.createNewFile();
+				FileWriter fw = new FileWriter(file);
+				fw.write("0,0");
+				fw.close();
+			} catch (IOException e) {
+				System.out.println("Error with opening the file.");
+			}
+			
+		}
+		
+		try {
+			FileReader fr = new FileReader(file);
+			StringBuilder sb = new StringBuilder();
+			int ch;
+			while((ch = fr.read()) != -1) sb.append((char)ch);
+			String content = sb.toString();
+			String[] elements = content.split(",", 2);
+			this.numberOfWins = Integer.parseInt(elements[0]);
+			this.numberOfLosses = Integer.parseInt(elements[1]);			
+		} catch (IOException e) {
+			System.out.println("Error with reading from the file.");
+		}
+		
+	}
+
 	@SuppressWarnings("deprecation")
 	private void generateMap() {
 		Island.resetNextID();
@@ -103,8 +137,33 @@ public class Game extends Frame {
 			public void windowClosing(WindowEvent e) {
 				if(timer != null) timer.interrupt();
 				map.deleteMap();
+				
+				saveStatistics();
+				
 				dispose();
 				menu.setVisible(true);
+			}
+
+			private void saveStatistics() {
+				File file = new File("PlayerStatistics.txt");
+				if(!file.exists()) {
+					try {
+						file.createNewFile();						
+					} catch (IOException e) {
+						System.out.println("Error with opening the file.");
+					}
+					
+				}
+				
+				String content = numberOfWins + "," + numberOfLosses;
+				try {
+					FileWriter fw = new FileWriter(file);
+					fw.write(content);
+					fw.close();
+				} catch (IOException e) {
+					System.out.println("Error when writing into a file.");					
+				}
+				
 			}
 		});
 	}
@@ -122,14 +181,20 @@ public class Game extends Frame {
 							int id = ((Land) map.cells[ii][jj]).getIslandID();
 							if(((Land) map.cells[ii][jj]).getIslandID() == Map.getHighestIslandID()) {								
 								mark(id, Color.GREEN);
-								message.setText("You won!");								
+								message.setText("You won!");
+								
+								numberOfWins++;
+								
 								deactivateMap();
 								restartButton.setEnabled(true);
 							} else {
 								 if(numberOfAttempts == 0) {
 									 mark(id, Color.RED);
-									 message.setText("Game over!");									 
-									 numberOfAttemptsLabel.setText("Number of attempts: 0");									 
+									 message.setText("Game over!");
+									 
+									 numberOfLosses++;
+									 
+									 numberOfAttemptsLabel.setText("Number of attempts: 0");
 									 deactivateMap();
 									 restartButton.setEnabled(true);
 								 }

@@ -3,14 +3,13 @@ package gui;
 import java.awt.*;
 import java.awt.event.*;
 
-import javax.swing.GroupLayout.Alignment;
-
 @SuppressWarnings("serial")
 public class Menu extends Frame {
 
 	private Panel centerPanel = new Panel(new GridLayout(0, 1));
 	private Button playButton = new Button("Play!");
-	private Button helpButton = new Button("Help");
+	private Button statisticsButton = new Button("Statistics");
+	private Button helpButton = new Button("Help");	
 	
 	public Menu() {
 		setBounds(500, 50, 300, 200);
@@ -26,6 +25,7 @@ public class Menu extends Frame {
 	private void fillWindow() {
 		centerPanel.add(new Label("Welcome to The Island Game!"));
 		centerPanel.add(playButton);
+		centerPanel.add(statisticsButton);
 		centerPanel.add(helpButton);
 		this.add(centerPanel, BorderLayout.CENTER);
 	}
