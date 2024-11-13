@@ -31,6 +31,6 @@ public class Help extends Frame {
 			}
 		});
 		
-		setVisible(true);		
+		setVisible(true);
 	}
 }

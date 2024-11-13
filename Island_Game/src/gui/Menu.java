@@ -43,6 +43,11 @@ public class Menu extends Frame {
 			new Game(this);
 		});
 		
+		statisticsButton.addActionListener((ae) -> {
+			this.setVisible(false);
+			new Statistics(this);
+		});
+		
 		helpButton.addActionListener((ae) -> {
 			this.setVisible(false);
 			new Help(this);
