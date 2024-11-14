@@ -5,6 +5,7 @@ import java.awt.event.*;
 
 import javax.swing.JLabel;
 
+@SuppressWarnings("serial")
 public class Help extends Frame {
 	
 	private Menu menu;

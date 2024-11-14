@@ -46,6 +46,10 @@ public class Timer extends Thread {
 		m = s = 0;
 	}
 	
+	public int getTimeInSeconds() {
+		return m * 60 + s;
+	}
+	
 	@Override
 	public String toString() {
 		return String.format("%02d:%02d", m, s);

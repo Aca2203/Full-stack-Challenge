@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public class Game extends Frame {
@@ -18,6 +19,7 @@ public class Game extends Frame {
 	
 	private int numberOfWins = 0;
 	private int numberOfLosses = 0;
+	private ArrayList<Integer> times = new ArrayList<>();
 	
 	private Timer timer = new Timer(timeLabel);
 	
@@ -65,10 +67,16 @@ public class Game extends Frame {
 			StringBuilder sb = new StringBuilder();
 			int ch;
 			while((ch = fr.read()) != -1) sb.append((char)ch);
+			fr.close();
 			String content = sb.toString();
-			String[] elements = content.split(",", 2);
+			String[] elements = content.split(",");
 			this.numberOfWins = Integer.parseInt(elements[0]);
-			this.numberOfLosses = Integer.parseInt(elements[1]);			
+			this.numberOfLosses = Integer.parseInt(elements[1]);
+			
+			for(int i = 2; i < elements.length; i++) {
+				times.add(Integer.parseInt(elements[i]));
+			}
+			
 		} catch (IOException e) {
 			System.out.println("Error with reading from the file.");
 		}
@@ -156,6 +164,9 @@ public class Game extends Frame {
 				}
 				
 				String content = numberOfWins + "," + numberOfLosses;
+				for(Integer i: times) {
+					content += "," + i;
+				}
 				try {
 					FileWriter fw = new FileWriter(file);
 					fw.write(content);
@@ -179,13 +190,14 @@ public class Game extends Frame {
 						else {
 							numberOfAttempts--;
 							int id = ((Land) map.cells[ii][jj]).getIslandID();
-							if(((Land) map.cells[ii][jj]).getIslandID() == Map.getHighestIslandID()) {								
+							if(((Land) map.cells[ii][jj]).getIslandID() == Map.getHighestIslandID()) {
 								mark(id, Color.GREEN);
-								message.setText("You won!");
+								message.setText("You won!");																					
+								deactivateMap();
 								
 								numberOfWins++;
+								times.add(timer.getTimeInSeconds());
 								
-								deactivateMap();
 								restartButton.setEnabled(true);
 							} else {
 								 if(numberOfAttempts == 0) {
