@@ -2,3 +2,43 @@ This project's QA report
 Developer Aleksandar Stefanović
 University of Belgrade School of Electrical Engineering
 
+Bugs/problems:
+- Fixed in version 1.1: when running the game for the first time, I noticed the colors of the land cells didn't look very natural, making it harder for the user to guess the correct island. That was because the change of color with
+  respect to height was constant (from blue to white). I fixed that problem by adding different color chaning patterns for different sections of height: 
+  
+  from 0 to 400 units of height (from blue to green),
+  from 400 to 500 units of height (from green to yellow),
+  from 500 to 800 units of height (from yellow to brown) and
+  from 800 to 1000 units of height (from brown to white)
+
+- Fixed in version 2.3: I noticed that sometimes the game wouldn't correctly load on the first opening. I fixed this bug by emptying the list of islands after closing the game window (if that isn't done, upon the next loading the new
+  islands might not be higher than the previous highest one, which is why the game doesn't register the new highest island)
+
+- After adding a timer, I noticed that the game would still be running even after closing the main menu window. This was simply because I forgot to stop the timer after closing the game window
+
+- Generally I had a problem with positioning of window elements (buttons, labels, text fields,...), which was fixed by correctly using panel layout modes.
+
+How would I test the projects of other contestants:
+I would test if:
+- the game can be restarted only after winning or losing
+- the click on the water cell is counted as a guess (in my opinion it shouldn't, it's just a user mistake)
+- the statistics are properly saved even in some irregular situations (the game is closed in the middle of playing)
+- the user isn't allowed to manually change their statistics
+
+Improvements/features I would make if I could in my game:
+- Making the game load faster
+- Making the user interface look better (adding a better message display and a background image, changing the button sizes/positions,...)
+- Adding multiple levels
+- Adding more stats (skill level or points which could be used for ranking players)
+- Improving existing stats (more precise timer and average guess time calculations)
+- Making all the windows resizable (especially the game window)
+- Possibility to login as a different player
+- Adding a ranking list (using points which would be calculated in some way for every player)
+- Not allowing users to manually change their statistics
+- Possibility for the user to make their own map and publish it
+
+Some factors that could affect my solution:
+- Variable map sizes
+- Loading custom made maps
+- Making your own maps
+- Adding multiple users
